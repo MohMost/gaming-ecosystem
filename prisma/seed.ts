@@ -1,27 +1,43 @@
 import { PrismaClient } from '@prisma/client';
+import { create } from 'domain';
+import { connect } from 'http2';
 const prisma = new PrismaClient();
 
 const seedGames = async () => {
-  await prisma.user.create({
-    data : {
-      email: 'mohmost@example.com',
-      passeword: '12345',
-      userName : 'mohmost',
-      addedGames : {
-        createMany :{ 
-             data : [ {
-                title : 'marvelous',
-                gameCover : "https://images.igdb.com/igdb/image/upload/t_cover_big/co1zj2.jpg",
-          },
-          {
-                title : 'monster hunter',
-                gameCover : "https://images.igdb.com/igdb/image/upload/t_cover_big/co1zj2.jpg",
-      }
-        ]
-      }
+  const user = await prisma.user.findFirst({
+    where : {
+      id : "clrpaj1bv0000jgo3nrijkc8g",
+      role : "USER"
+    }
+  })
+  if(user){
+    await prisma.bucketListGame.create({
+    data: {
+      title: "Mincraft",
+      category: ["sandbox", "multiplayer"],
+      addedAt : new Date(),
+      gameCover : "https://upload.wikimedia.org/wikinews/en/7/7a/Minecraft_game_cover.jpeg",
+      addedBy: {
+        connect :{
+       id : user.id
+      }},
+      links : {
+        createMany : {
+          data : [
+            {
+              title : "mincraft forge setup guide",
+              link : "https://www.google.com",
+              
+            }
+          ]
         }
       }
+    },
   })
+  }
+  
+  
+
 };
       
 seedGames()

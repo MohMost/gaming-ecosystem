@@ -5,7 +5,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// prisma/schema.prisma
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
@@ -22,11 +21,22 @@ model User {
   role       Role             @default(USER)
   image      String?
   addedGames BucketListGame[]
+  theme      Theme            @default(RED)
 }
 
 enum Role {
   ADMIN
   USER
+  RANGER
+}
+
+enum Theme {
+  RED
+  GREEN
+  BLUE
+  BLACK
+  WHITE
+  PURPLE
 }
 
 model BucketListGame {
@@ -51,6 +61,6 @@ model Link {
   id     String         @id @default(uuid())
   gameId String
   link   String         @default("no mood")
-  title  String         @default("")
+  title  String
   game   BucketListGame @relation(fields: [gameId], references: [id])
 }
